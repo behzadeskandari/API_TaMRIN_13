@@ -5,6 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.EntityFrameworkCore;
 using API.DTO;
+using System.Security.Claims;
 
 namespace API.Controllers
 {
@@ -37,6 +38,47 @@ namespace API.Controllers
 
                 return user;
             }
+        }
+
+        [HttpPost("Login")]
+        public async Task<ActionResult<AppUser>> Login(LoginDto loginDto)
+        {
+            var user = await _context.Users.SingleOrDefaultAsync(x => x.Name == loginDto.UserName);
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            //ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal();
+            //ClaimsIdentity claimsIdentity = new ClaimsIdentity();
+            //claimsPrincipal.AddIdentity(claimsIdentity);
+            //SignIn(claimsPrincipal);
+
+
+            using var hmac = new HMACSHA512(user.PasswordSalt);
+            var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password));
+
+
+            ///Fisrt WAY
+            //if (computedHash.SequenceEqual(user.PasswordHash))
+            //{
+            //    return user;
+            //}
+
+
+            ///OSTAD WAY
+            for (int i = 0; i < computedHash.Length; i++)
+            {
+                
+                if (computedHash[i] != user.PasswordHash[i])
+                {
+                    return Unauthorized("Invalid Password");
+                }
+            
+            }
+            
+            return user;
+
         }
 
 

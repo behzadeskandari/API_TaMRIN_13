@@ -58,10 +58,10 @@ namespace API.Controllers
             AppUser appUser = await _context.Users.FirstOrDefaultAsync(x => x.Id == telePhoneDTO.Id);
 
             appUser.Telephone = telePhoneDTO.Telephone;
-            
-            //int variable = 0;
 
-            if (telePhoneDTO.Telephone.ToString().Length == 8)///&& telePhoneDTO.Telephone == typeof(variable)
+            //int variable = 0;
+            
+            if (telePhoneDTO.Telephone.ToString().Length == 8 && IsAllDigits(telePhoneDTO.Telephone.ToString()))///&& telePhoneDTO.Telephone == typeof(variable)
             {
                 _context.Users.Update(appUser);
                 await _context.SaveChangesAsync();
@@ -72,12 +72,17 @@ namespace API.Controllers
 
             return appUser;
         }
-        
+
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public bool IsAllDigits(string name)
+        {
+            return name.All(char.IsDigit);
+        }
 
         [HttpPost("showAgeFromDateofBirth")]
         public async Task<int> showAgeFromDateofBirth(AgeConverterDto dateOfBirth)
         {
-
+            
             AppUser User = await _context.Users.FindAsync(dateOfBirth.Id);
 
             int age = DateTime.Now.Year - User.DateofBirth.Year;
