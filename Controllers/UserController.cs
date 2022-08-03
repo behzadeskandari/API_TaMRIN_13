@@ -61,6 +61,7 @@ namespace API.Controllers
 
             //int variable = 0;
             
+
             if (telePhoneDTO.Telephone.ToString().Length == 8 && IsAllDigits(telePhoneDTO.Telephone.ToString()))///&& telePhoneDTO.Telephone == typeof(variable)
             {
                 _context.Users.Update(appUser);
@@ -85,6 +86,7 @@ namespace API.Controllers
             
             AppUser User = await _context.Users.FindAsync(dateOfBirth.Id);
 
+            
             int age = DateTime.Now.Year - User.DateofBirth.Year;
 
             if (DateTime.Now.DayOfYear < User.DateofBirth.DayOfYear)
