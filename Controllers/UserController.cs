@@ -42,12 +42,19 @@ namespace API.Controllers
             //DateOfBirthResponseDTO ageDto = new DateOfBirthResponseDTO();
             AppUser appUser = await _context.Users.FirstOrDefaultAsync(x => x.Id == dateOfBirthDTO.Id);
 
-            appUser.DateofBirth = dateOfBirthDTO.DateofBirth;
+            if (appUser != null)
+            {
 
-            _context.Users.Update(appUser);
-            await _context.SaveChangesAsync();
-            return appUser;
+                appUser.DateofBirth = dateOfBirthDTO.DateofBirth;
 
+                _context.Users.Update(appUser);
+                await _context.SaveChangesAsync();
+                return appUser;
+            }
+            else
+            {
+                return appUser;
+            }
         }
 
         [HttpPost("SaveTelephoneNumber")]
@@ -57,18 +64,21 @@ namespace API.Controllers
             
             AppUser appUser = await _context.Users.FirstOrDefaultAsync(x => x.Id == telePhoneDTO.Id);
 
-            appUser.Telephone = telePhoneDTO.Telephone;
-
-            //int variable = 0;
-            
-
-            if (telePhoneDTO.Telephone.ToString().Length == 8 && IsAllDigits(telePhoneDTO.Telephone.ToString()))///&& telePhoneDTO.Telephone == typeof(variable)
+            if (appUser != null)
             {
-                _context.Users.Update(appUser);
-                await _context.SaveChangesAsync();
-            }else
-            {
-                BadRequest();
+                appUser.Telephone = telePhoneDTO.Telephone;
+
+                //int variable = 0;
+
+                if (telePhoneDTO.Telephone.ToString().Length == 8 && IsAllDigits(telePhoneDTO.Telephone.ToString()))///&& telePhoneDTO.Telephone == typeof(variable)
+                {
+                    _context.Users.Update(appUser);
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    BadRequest();
+                }
             }
 
             return appUser;
